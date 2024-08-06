@@ -21,7 +21,6 @@ export class AuthController {
 
   async login(req: Request, res: Response, next: NextFunction): Promise<any> {
     const { username, password } = req.body;
-
     try {
       const user = await this.authService.findByUsername(username);
       if (!user) return res.status(401).json({ message: 'User not found' });
@@ -29,21 +28,27 @@ export class AuthController {
       const isValid = await this.authService.validatePassword(user, password);
       if (!isValid) return res.status(401).json({ message: 'Invalid password' });
 
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '1h' });
-      res.json({ token }); // Bu satırda `void` döndürülüyor
+      const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+      // Save refreshToken in database (pseudo-code)
+      await this.authService.saveRefreshToken(user.id, refreshToken);
+
+      res.json({ accessToken, refreshToken });
     } catch (error) {
       next(error);
     }
   }
 
   async refresh(req: Request, res: Response): Promise<void> {
-    const { token } = req.body;
+    const { refreshToken } = req.body;
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret') as { id: string };
-      const newToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '1h' });
-      res.json({ token: newToken }); // Bu satırda `void` döndürülüyor
+      const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET) as { id: string };
+      const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+      res.json({ accessToken: newAccessToken });
     } catch (error) {
-      res.status(401).json({ message: 'Invalid token.' }); // Bu satırda `void` döndürülüyor
+      res.status(401).json({ message: 'Invalid token.' });
     }
   }
 

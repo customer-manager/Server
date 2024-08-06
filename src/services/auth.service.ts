@@ -32,4 +32,9 @@ export class AuthService {
   async validatePassword(user: User, password: string): Promise<boolean> {
     return await bcrypt.compare(password, user.password);
   }
+
+  async saveRefreshToken(userId: string, refreshToken: string): Promise<void> {
+    const userDoc = this.usersCollection.doc(userId);
+    await userDoc.update({ refreshToken });
+  }
 }
