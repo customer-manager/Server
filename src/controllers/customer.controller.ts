@@ -23,6 +23,20 @@ export class CustomerController {
     }
   }
 
+  async search(req: Request, res: Response): Promise<void> {
+    try {
+      const { name } = req.query;
+      if (typeof name === 'string') {
+        const customers = await customerService.search(name);
+        res.status(200).json(customers);
+      } else {
+        res.status(400).send('Invalid query parameter');
+      }
+    } catch (error) {
+      res.status(500).send('Internal server error');
+    }
+  }
+
   async update(req: Request, res: Response): Promise<void> {
     const customer = await customerService.update(req.params.id, req.body);
     if (customer) {

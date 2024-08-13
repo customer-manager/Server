@@ -22,6 +22,13 @@ class CustomerService {
         const doc = await this.customersCollection.doc(id).get();
         return doc.exists ? { id: doc.id, ...doc.data() } : null;
     }
+    async search(name) {
+        const snapshot = await this.customersCollection
+            .where('name', '>=', name)
+            .where('name', '<=', name + '\uf8ff')
+            .get();
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
     async update(id, customer) {
         await this.customersCollection.doc(id).update(customer);
         return this.findById(id);

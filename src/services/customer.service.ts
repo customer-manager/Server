@@ -20,6 +20,16 @@ export class CustomerService {
     return doc.exists ? { id: doc.id, ...doc.data() } as Customer : null;
   }
 
+
+  async search(name: string): Promise<Customer[]> {
+    const snapshot = await this.customersCollection
+      .where('name', '>=', name)
+      .where('name', '<=', name + '\uf8ff')
+      .get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Customer));
+  }
+
+
   async update(id: string, customer: Partial<Customer>): Promise<Customer | null> {
     await this.customersCollection.doc(id).update(customer);
     return this.findById(id);
