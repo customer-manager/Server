@@ -4,8 +4,13 @@ import { Customer } from '../models/customer.model';
 export class CustomerService {
   private customersCollection = db.collection('customers');
 
+  private toLowerCaseString(str: string): string {
+    return str.toLowerCase();
+  }
+
   async create(customer: Customer): Promise<Customer> {
-    const docRef = await this.customersCollection.add(customer);
+    const customerData = { ...customer, customer_name: this.toLowerCaseString(customer.customer_name) };
+    const docRef = await this.customersCollection.add(customerData);
     const doc = await docRef.get();
     return { id: doc.id, ...doc.data() } as Customer;
   }
@@ -20,19 +25,18 @@ export class CustomerService {
     return doc.exists ? { id: doc.id, ...doc.data() } as Customer : null;
   }
 
-
   async search(name: string): Promise<Customer[]> {
+    const lowerCaseName = this.toLowerCaseString(name);
     const snapshot = await this.customersCollection
-      .where('customer_name', '>=', name)
-      .where('customer_name', '<=', name + '\uf8ff')
+      .where('customer_name', '>=', lowerCaseName)
+      .where('customer_name', '<=', lowerCaseName + '\uf8ff')
       .get();
-      let customers=snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Customer));
-    return customers;
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Customer));
   }
 
-
   async update(id: string, customer: Partial<Customer>): Promise<Customer | null> {
-    await this.customersCollection.doc(id).update(customer);
+    const updatedData = { ...customer, customer_name: customer.customer_name ? this.toLowerCaseString(customer.customer_name) : undefined };
+    await this.customersCollection.doc(id).update(updatedData);
     return this.findById(id);
   }
 
