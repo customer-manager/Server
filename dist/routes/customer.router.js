@@ -9,6 +9,6 @@ customerRouter.get('/', customerController.findAll.bind(customerController));
 customerRouter.get('/:id', customerController.findById.bind(customerController));
 customerRouter.put('/:id', customerController.update.bind(customerController));
 customerRouter.delete('/:id', customerController.delete.bind(customerController));
-customerRouter.get('/search', customerController.search.bind(customerController));
+customerRouter.get('/search/:name', customerController.search.bind(customerController));
 exports.default = customerRouter;
 //# sourceMappingURL=customer.router.js.map

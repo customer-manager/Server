@@ -23,8 +23,8 @@ export class CustomerService {
 
   async search(name: string): Promise<Customer[]> {
     const snapshot = await this.customersCollection
-      .where('name', '>=', name)
-      .where('name', '<=', name + '\uf8ff')
+      .where('customer_name', '>=', name)
+      .where('customer_name', '<=', name + '\uf8ff')
       .get();
       let customers=snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Customer));
     return customers;

@@ -23,7 +23,7 @@ class CustomerController {
     }
     async search(req, res) {
         try {
-            const { name } = req.query;
+            const { name } = req.params;
             if (typeof name === 'string') {
                 const customers = await customerService.search(name);
                 res.status(200).json(customers);

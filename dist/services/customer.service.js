@@ -24,10 +24,11 @@ class CustomerService {
     }
     async search(name) {
         const snapshot = await this.customersCollection
-            .where('name', '>=', name)
-            .where('name', '<=', name + '\uf8ff')
+            .where('customer_name', '>=', name)
+            .where('customer_name', '<=', name + '\uf8ff')
             .get();
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        let customers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return customers;
     }
     async update(id, customer) {
         await this.customersCollection.doc(id).update(customer);
