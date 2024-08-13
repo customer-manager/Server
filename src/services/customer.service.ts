@@ -26,7 +26,8 @@ export class CustomerService {
       .where('name', '>=', name)
       .where('name', '<=', name + '\uf8ff')
       .get();
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Customer));
+      let customers=snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Customer));
+    return customers;
   }
 
 
