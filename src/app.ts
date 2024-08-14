@@ -23,10 +23,12 @@ initializeLocalPassport(authService);
 const corsOptions = {
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
-app.use(cors(corsOptions)); // Apply CORS middleware
+
+app.use(cors(corsOptions)); 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
