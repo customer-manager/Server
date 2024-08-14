@@ -7,4 +7,5 @@ export interface Customer{
     appointment_end_date:string;
     job:string;
     status:boolean;
+    payment:any;
 }
