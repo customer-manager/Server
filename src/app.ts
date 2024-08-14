@@ -21,10 +21,9 @@ initializeLocalPassport(authService);
 
 // CORS configuration
 const corsOptions = {
-  origin: 'https://client-8gkm.onrender.com/',
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 
