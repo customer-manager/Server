@@ -28,7 +28,7 @@ export class AuthController {
       const isValid = await this.authService.validatePassword(user, password);
       if (!isValid) return res.status(401).json({ message: 'Invalid password' });
 
-      const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '10h' });
       const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
       // Save refreshToken in database (pseudo-code)
